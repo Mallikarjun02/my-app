@@ -2,6 +2,12 @@ node {
     
     withCredentials ([usernamePassword(credentialsId: 'my-docker-hub-id', usernameVariable: 'mydockerhub_username',passwordVariable: 'mydockerhub_password')]) {
         
+        stage('Checkout') {
+
+           git credentialsId: 'Shivaraj18-github-id', url: 'https://github.com/Shivaraj18/my-app.git'
+           
+        }
+        
         stage('Compile, Unit Test & Package'){
             
             sh "mvn clean package"
