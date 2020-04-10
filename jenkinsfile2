@@ -1,0 +1,37 @@
+node {
+    
+    withCredentials ([
+        credentialsid: 'my-docker-hub-id',
+        usernameVariable: 'mydockerhub_username',
+        passwordVariable: 'mydockerhub_password'
+    ]){
+        
+        stage('Compile, Unit Test & Package'){
+            
+            sh "mvn clean package"
+        }
+        
+        stage('Build Docker Image'){
+            sh "docker build -t ${mydockerhub_username}/my-app:1.0.1 ."
+        }
+        
+        stage('Push Docker image'){
+            
+            sh """
+               docker login -u ${mydockerhub_username} -p ${mydockerhub_password}
+               docker push ${mydockerhub_username}/my-app:1.0.1
+            """
+            
+        }
+        
+       /* stage('Run Container on Dev-Server'){
+            def dockerRm = 'docker rm -f my-app'
+            def dockerRun = 'docker run -d --name my-app -p 8282:8080 shivaraj18/my-app:2.0.1'
+            sshagent(['Dev-Server']) {
+                sh "ssh -o StrictHostKeyChecking=no shiva@13.233.236.61 ${dockerRm}"
+                sh "ssh -o StrictHostKeyChecking=no shiva@13.233.236.61 ${dockerRun}"
+                                                                    //POM: interpolation must be w/i "" quotes
+            }
+        }*/
+    }
+}
