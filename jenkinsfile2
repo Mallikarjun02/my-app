@@ -1,9 +1,10 @@
 node {
     
     withCredentials ([
+        usernamePassword(
         credentialsid: 'my-docker-hub-id',
         usernameVariable: 'mydockerhub_username',
-        passwordVariable: 'mydockerhub_password'
+        passwordVariable: 'mydockerhub_password')
     ]){
         
         stage('Compile, Unit Test & Package'){
